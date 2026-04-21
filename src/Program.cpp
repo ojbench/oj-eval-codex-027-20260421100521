@@ -65,7 +65,12 @@ void Program::execute(Statement* stmt) {
 
 int Program::getPC() const noexcept { return programCounter_; }
 
-void Program::changePC(int line) { programCounter_ = line; }
+void Program::changePC(int line) {
+  if (!recorder_.hasLine(line)) {
+    throw BasicError("LINE NUMBER ERROR");
+  }
+  programCounter_ = line;
+}
 
 void Program::programEnd() { programEnd_ = true; }
 

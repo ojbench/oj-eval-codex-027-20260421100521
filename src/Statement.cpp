@@ -48,11 +48,65 @@ class InputStatement : public Statement {
   InputStatement(std::string var, std::string source)
       : Statement(std::move(source)), var_(std::move(var)) {}
   void execute(VarState& state, Program&) const override {
-    int v;
-    if (!(std::cin >> v)) {
-      throw BasicError("INVALID INPUT");
+    while (true) {
+      std::string raw;
+      if (!std::getline(std::cin, raw)) {
+        std::cout << " ? INVALID NUMBER\n";
+        continue;
+      }
+      // prepare trimmed copy for validation
+      std::string line = raw;
+      auto ltrim = [](std::string& s) {
+        size_t i = 0;
+        while (i < s.size() && std::isspace(static_cast<unsigned char>(s[i]))) ++i;
+        s.erase(0, i);
+      };
+      auto rtrim = [](std::string& s) {
+        size_t i = s.size();
+        while (i > 0 && std::isspace(static_cast<unsigned char>(s[i - 1]))) --i;
+        s.erase(i);
+      };
+      ltrim(line);
+      rtrim(line);
+      if (line.empty()) {
+        std::cout << " ? INVALID NUMBER\n";
+        continue;
+      }
+      bool neg = false;
+      size_t pos = 0;
+      if (line[0] == '+' || line[0] == '-') {
+        neg = (line[0] == '-');
+        pos = 1;
+        if (pos >= line.size()) {
+          std::cout << " ? INVALID NUMBER\n";
+          continue;
+        }
+      }
+      long long val = 0;
+      bool ok = true;
+      for (; pos < line.size(); ++pos) {
+        if (!std::isdigit(static_cast<unsigned char>(line[pos]))) {
+          ok = false;
+          break;
+        }
+        int d = line[pos] - '0';
+        val = val * 10 + d;
+        if ((!neg && val > std::numeric_limits<int>::max()) ||
+            (neg && -val < std::numeric_limits<int>::min())) {
+          ok = false;
+          break;
+        }
+      }
+      if (!ok) {
+        std::cout << " ? INVALID NUMBER\n";
+        continue;
+      }
+      // echo the validated input
+      std::cout << " ? " << line << "\n";
+      int iv = static_cast<int>(neg ? -val : val);
+      state.setValue(var_, iv);
+      break;
     }
-    state.setValue(var_, v);
   }
 
  private:
