@@ -39,12 +39,14 @@ int main() {
       }
       if (first && first->type == TokenType::INDENT) {
         tokens.get();
-        program.execute(makeIndent());
+        std::unique_ptr<Statement> stmt(makeIndent());
+        program.execute(stmt.get());
         continue;
       }
       if (first && first->type == TokenType::DEDENT) {
         tokens.get();
-        program.execute(makeDedent());
+        std::unique_ptr<Statement> stmt(makeDedent());
+        program.execute(stmt.get());
         continue;
       }
       if (first && first->type == TokenType::QUIT) {
