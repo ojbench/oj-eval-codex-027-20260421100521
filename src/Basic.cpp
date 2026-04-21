@@ -19,7 +19,45 @@ int main() {
       continue;
     }
     try {
-      // TODO: The main function.
+      TokenStream tokens = lexer.tokenize(line);
+      // Support meta-commands without line numbers
+      const Token* first = tokens.peek();
+      if (first && first->type == TokenType::RUN) {
+        tokens.get();
+        program.run();
+        continue;
+      }
+      if (first && first->type == TokenType::LIST) {
+        tokens.get();
+        program.list();
+        continue;
+      }
+      if (first && first->type == TokenType::CLEAR) {
+        tokens.get();
+        program.clear();
+        continue;
+      }
+      if (first && first->type == TokenType::QUIT) {
+        break;
+      }
+
+      auto parsed = parser.parseLine(tokens, line);
+      auto lineNo = parsed.getLine();
+      Statement* stmt = parsed.fetchStatement();
+      if (lineNo.has_value()) {
+        // program line
+        if (stmt == nullptr) {
+          program.removeStmt(*lineNo);
+        } else {
+          program.addStmt(*lineNo, stmt);
+        }
+      } else {
+        // immediate mode
+        if (stmt) {
+          std::unique_ptr<Statement> guard(stmt);
+          program.execute(stmt);
+        }
+      }
     } catch (const BasicError& e) {
       std::cout << e.message() << "\n";
     }

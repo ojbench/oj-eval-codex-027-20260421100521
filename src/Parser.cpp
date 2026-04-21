@@ -99,14 +99,18 @@ Statement* Parser::parseLet(TokenStream& tokens,
   }
 
   auto expr = parseExpression(tokens);
-
-  // TODO: create a corresponding stmt and return it.
+  // Construct LET statement: store varName = expr
+  std::ostringstream oss;
+  oss << "LET " << varName << " = " << originLine;
+  return makeLet(varName, expr, oss.str());
 }
 
 Statement* Parser::parsePrint(TokenStream& tokens,
                               const std::string& originLine) const {
   auto expr = parseExpression(tokens);
-  // TODO: create a corresponding stmt and return it.
+  std::ostringstream oss;
+  oss << "PRINT " << originLine;
+  return makePrint(expr, oss.str());
 }
 
 Statement* Parser::parseInput(TokenStream& tokens,
@@ -121,7 +125,9 @@ Statement* Parser::parseInput(TokenStream& tokens,
   }
 
   std::string varName = varToken->text;
-  // TODO: create a corresponding stmt and return it.
+  std::ostringstream oss;
+  oss << "INPUT " << varName;
+  return makeInput(varName, oss.str());
 }
 
 Statement* Parser::parseGoto(TokenStream& tokens,
@@ -136,7 +142,9 @@ Statement* Parser::parseGoto(TokenStream& tokens,
   }
 
   int targetLine = parseLiteral(lineToken);
-  // TODO: create a corresponding stmt and return it.
+  std::ostringstream oss;
+  oss << "GOTO " << targetLine;
+  return makeGoto(targetLine, oss.str());
 }
 
 Statement* Parser::parseIf(TokenStream& tokens,
@@ -184,8 +192,9 @@ Statement* Parser::parseIf(TokenStream& tokens,
   }
 
   int targetLine = parseLiteral(lineToken);
-
-  // TODO: create a corresponding stmt and return it.
+  std::ostringstream oss;
+  oss << "IF ... THEN " << targetLine;
+  return makeIf(leftExpr, op, rightExpr, targetLine, oss.str());
 }
 
 Statement* Parser::parseRem(TokenStream& tokens,
@@ -194,12 +203,13 @@ Statement* Parser::parseRem(TokenStream& tokens,
   if (!remInfo || remInfo->type != TokenType::REMINFO) {
     throw BasicError("SYNTAX ERROR");
   }
-  // TODO: create a corresponding stmt and return it.
+  // Include the REM keyword when storing for LIST output
+  return makeRem(std::string("REM") + remInfo->text);
 }
 
 Statement* Parser::parseEnd(TokenStream& tokens,
                             const std::string& originLine) const {
-  // TODO: create a corresponding stmt and return it.
+  return makeEnd();
 }
 
 Expression* Parser::parseExpression(TokenStream& tokens) const {

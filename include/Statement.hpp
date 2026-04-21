@@ -21,5 +21,13 @@ class Statement {
   std::string source_;
 };
 
-// TODO: Other statement types derived from Statement, e.g., GOTOStatement,
-// LetStatement, etc.
+// Factory functions for concrete statements
+class Expression;
+Statement* makeLet(std::string var, Expression* expr, std::string source);
+Statement* makePrint(Expression* expr, std::string source);
+Statement* makeInput(std::string var, std::string source);
+Statement* makeGoto(int line, std::string source);
+Statement* makeIf(Expression* left, char op, Expression* right, int target,
+                  std::string source);
+Statement* makeRem(std::string text);
+Statement* makeEnd();

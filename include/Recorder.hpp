@@ -19,5 +19,5 @@ class Recorder {
   int nextLine(int line) const noexcept;
 
  private:
-  // TODO.
+  std::map<int, std::unique_ptr<Statement>> lines_;
 };
