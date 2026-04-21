@@ -49,9 +49,12 @@ class InputStatement : public Statement {
       : Statement(std::move(source)), var_(std::move(var)) {}
   void execute(VarState& state, Program&) const override {
     while (true) {
+      // print prompt without newline and without echoing input
+      std::cout << " ? ";
+      std::cout.flush();
       std::string raw;
       if (!std::getline(std::cin, raw)) {
-        std::cout << " ? INVALID NUMBER\n";
+        std::cout << "INVALID NUMBER\n";
         continue;
       }
       // prepare trimmed copy for validation
@@ -69,7 +72,7 @@ class InputStatement : public Statement {
       ltrim(line);
       rtrim(line);
       if (line.empty()) {
-        std::cout << " ? INVALID NUMBER\n";
+        std::cout << "INVALID NUMBER\n";
         continue;
       }
       bool neg = false;
@@ -78,7 +81,7 @@ class InputStatement : public Statement {
         neg = (line[0] == '-');
         pos = 1;
         if (pos >= line.size()) {
-          std::cout << " ? INVALID NUMBER\n";
+          std::cout << "INVALID NUMBER\n";
           continue;
         }
       }
@@ -98,11 +101,9 @@ class InputStatement : public Statement {
         }
       }
       if (!ok) {
-        std::cout << " ? INVALID NUMBER\n";
+        std::cout << "INVALID NUMBER\n";
         continue;
       }
-      // echo the validated input
-      std::cout << " ? " << line << "\n";
       int iv = static_cast<int>(neg ? -val : val);
       state.setValue(var_, iv);
       break;
