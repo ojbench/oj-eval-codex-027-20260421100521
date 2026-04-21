@@ -76,6 +76,10 @@ Statement* Parser::parseStatement(TokenStream& tokens,
       return parseRem(tokens, originLine);
     case TokenType::END:
       return parseEnd(tokens, originLine);
+    case TokenType::INDENT:
+      return makeIndent();
+    case TokenType::DEDENT:
+      return makeDedent();
     default:
       throw BasicError("SYNTAX ERROR");
   }

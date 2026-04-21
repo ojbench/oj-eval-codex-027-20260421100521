@@ -178,6 +178,18 @@ class EndStatement : public Statement {
   }
 };
 
+class IndentStatement : public Statement {
+ public:
+  IndentStatement() : Statement("INDENT") {}
+  void execute(VarState& state, Program&) const override { state.pushScope(); }
+};
+
+class DedentStatement : public Statement {
+ public:
+  DedentStatement() : Statement("DEDENT") {}
+  void execute(VarState& state, Program&) const override { state.popScope(); }
+};
+
 // Factory function definitions
 Statement* makeLet(std::string var, Expression* expr, std::string source) {
   return new LetStatement(std::move(var), expr, std::move(source));
@@ -197,3 +209,5 @@ Statement* makeIf(Expression* left, char op, Expression* right, int target,
 }
 Statement* makeRem(std::string text) { return new RemStatement(std::move(text)); }
 Statement* makeEnd() { return new EndStatement(); }
+Statement* makeIndent() { return new IndentStatement(); }
+Statement* makeDedent() { return new DedentStatement(); }

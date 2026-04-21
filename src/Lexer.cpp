@@ -14,7 +14,8 @@ const std::unordered_map<std::string, TokenType> TABLE = {
     {"IF", TokenType::IF},       {"THEN", TokenType::THEN},
     {"RUN", TokenType::RUN},     {"LIST", TokenType::LIST},
     {"CLEAR", TokenType::CLEAR}, {"QUIT", TokenType::QUIT},
-    {"HELP", TokenType::HELP}};
+    {"HELP", TokenType::HELP},   {"INDENT", TokenType::INDENT},
+    {"DEDENT", TokenType::DEDENT}};
 
 bool isOverflow(const std::string& digits, bool negative) {
   constexpr long long max_limit = std::numeric_limits<int>::max();

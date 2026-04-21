@@ -18,6 +18,8 @@ enum class TokenType {
   CLEAR,
   QUIT,
   HELP,
+  INDENT,
+  DEDENT,
   // Basic lexical units
   IDENTIFIER,
   NUMBER,

@@ -31,3 +31,5 @@ Statement* makeIf(Expression* left, char op, Expression* right, int target,
                   std::string source);
 Statement* makeRem(std::string text);
 Statement* makeEnd();
+Statement* makeIndent();
+Statement* makeDedent();

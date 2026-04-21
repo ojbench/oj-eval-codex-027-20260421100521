@@ -37,6 +37,16 @@ int main() {
         program.clear();
         continue;
       }
+      if (first && first->type == TokenType::INDENT) {
+        tokens.get();
+        program.execute(makeIndent());
+        continue;
+      }
+      if (first && first->type == TokenType::DEDENT) {
+        tokens.get();
+        program.execute(makeDedent());
+        continue;
+      }
       if (first && first->type == TokenType::QUIT) {
         break;
       }
